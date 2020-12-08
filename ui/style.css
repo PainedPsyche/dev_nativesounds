@@ -4,6 +4,12 @@
     font-family: sans-serif;
 }
 
+h1 {
+    color: white;
+    font-size: 3vh;
+    margin-bottom: 3vh;
+}
+
 .window {
     width: 30%;
     height: 30%;
@@ -13,18 +19,29 @@
     transform: translate(-50%, -50%);
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+}
+
+.radioselect {
+    display: flex;
+    flex-direction: column;
+    color: white;
+    margin-bottom: 3vh;
+    align-items: flex-start;
+}
+
+.radiobutton label {
+    float: right;
+}
+
+.buttonbox {
+    display: flex;
+    flex-direction: row;
+    margin-top: 4vh;
 }
 
 .window select {
     width: 70%;
     display: block;
-}
-
-.window .break {
-    flex-basis: 100%;
-    height: 0;
 }

@@ -2,7 +2,9 @@
 
 local isVisible = false
 local loaded = false
-local sounds = {
+local nativeCalled = ''
+
+local soundsFrontend = {
     --[[
     NOTE:   Looks like the sounds I commented out 
             cannot be played with lua, or at least
@@ -706,14 +708,55 @@ local sounds = {
     { -1, '10_SEC_WARNING', 'HUD_MINI_GAME_SOUNDSET', 1 },
 }
 
+local sounds = {
+    { -1, 'CANCEL', 'HUD_MINI_GAME_SOUNDSET', 0, 0, 1},
+    --{ -1, 'CANCEL', sub_82c23(), 0, 0, 1},
+    { -1, 'CHARACTER_CHANGE_CHARACTER_01_MASTER', 0, 0, 0, 0},
+    { -1, 'CHARACTER_CHANGE_UP_MASTER', 0, 0, 0, 1},
+    --{ -1, 'NAV_UP_DOWN', sub_82c23(), 0, 0, 1},
+    { -1, 'SELECT', 'HUD_FRONTEND_DEFAULT_SOUNDSET', 0, 0, 1},
+    { -1, 'SELECT', 'HUD_MINI_GAME_SOUNDSET', 0, 0, 1},
+    --{ -1, 'SELECT', sub_82c23(), 0, 0, 1},
+    { -1, 'slow', 'SHORT_PLAYER_SWITCH_SOUND_SET', 0, 0, 1},
+    { -1, 'Take_Picture', 'MUGSHOT_CHARACTER_CREATION_SOUNDS', 0, 0, 1},
+    { -1, 'Virus_Eradicated', 'LESTER1A_SOUNDS', 0, 0, 1},
+    { -1, 'Zoom_In', 'MUGSHOT_CHARACTER_CREATION_SOUNDS', 0, 0, 1},
+    { -1, 'Zoom_Out', 'MUGSHOT_CHARACTER_CREATION_SOUNDS', 0, 0, 1},
+
+    --[[
+    { g_42DE._f69, 'CHARACTER_CHANGE_DPAD_DOWN_MASTER', 0, 0, 0, 0},
+    { g_42DE._f69, 'CHARACTER_CHANGE_DPAD_DOWN_MP_MASTER', 0, 0, 0, 0},
+    { g_42DE._f6B, 'CHARACTER_CHANGE_DOWN_MASTER', 0, 0, 0, 1},
+    { g_42DE._f6D, 'All', 'SHORT_PLAYER_SWITCH_SOUND_SET', 0, 0, 1},
+    { g_42DE._f6D, 'CHARACTER_CHANGE_SKY_MASTER', 0, 0, 0, 1},
+    { l_208, 'CANCEL', 'HUD_MINI_GAME_SOUNDSET', 0, 0, 1},
+    { l_208, 'NAV_UP_DOWN', 'HUD_MINI_GAME_SOUNDSET', 0, 0, 1},
+    { l_208, 'SELECT', 'HUD_MINI_GAME_SOUNDSET', 0, 0, 1},
+    { l_61, 'ent_amb_elec_crackle', 0, 0, 0, 1},
+    { l_62, 'spl_stun_npc_master', 0, 0, 0, 1},
+    { l_E60, 'Frontend_Beast_Frozen_Screen_Loop', 'FM_Events_Sasquatch_Sounds', 0, 0, 0},
+    { v_18, 'Garage_Open', 'CAR_STEAL_2_SOUNDSET', 0, 0, 1},
+    --]]
+}
+
 Citizen.CreateThread(function()
     while not loaded do
         Citizen.Wait(1000)
         SendNUIMessage({
             action = 'populateTable',
-            content = json.encode(sounds)
+            content = json.encode(soundsFrontend)
         })
+        nativeCalled = 'FRONTEND'
         loaded = true
+    end
+
+    while true do
+        if isVisible then
+            -- Disable camera pan and tilt
+            DisableControlAction(0, 1, true)
+            DisableControlAction(0, 2, true)
+        end
+        Citizen.Wait(10)
     end
 end)
 
@@ -730,9 +773,29 @@ RegisterNUICallback('close', function(data, cb)
     setVisible(false)
 end)
 
+RegisterNUICallback('changeNative', function(data, cb)
+    nativeCalled = data['native']
+    if nativeCalled == 'FRONTEND' then
+        SendNUIMessage({
+            action = 'populateTable',
+            content = json.encode(soundsFrontend)
+        })
+    elseif nativeCalled == 'SOUND' then
+        SendNUIMessage({
+            action = 'populateTable',
+            content = json.encode(sounds)
+        })
+    end
+end)
+
 RegisterNUICallback('play', function(data, cb)
     local index = tonumber(data['index'])
-    PlaySoundFrontend(sounds[index][1], sounds[index][2], sounds[index][3], sounds[index][4])
+
+    if nativeCalled == 'FRONTEND' then
+        PlaySoundFrontend(soundsFrontend[index][1], soundsFrontend[index][2], soundsFrontend[index][3], soundsFrontend[index][4])
+    elseif nativeCalled == 'SOUND' then
+        PlaySound(sounds[index][1], sounds[index][2], sounds[index][3], sounds[index][4], sounds[index][5], sounds[index][6])
+    end
 end)
 
 RegisterCommand('nativesounds', function()

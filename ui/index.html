@@ -8,12 +8,24 @@
     <body style="display: none;">
         <div class="container">
             <div class="window">
+                <h1>Native:</h1>
+                <div class ="radioselect">
+                    <div class="radiobutton">
+                        <input type="radio" name="native" value="0" id="frontend" checked />
+                        <label for="frontend">PlaySoundFrontend</label>
+                    </div>
+                    <div class="radiobutton">
+                        <label for="frontend">PlaySound</label>
+                        <input type="radio" name="native" value="1" id="sound"/>
+                    </div>
+                </div>
                 <select name="sounds" id="dropdown">
                     <option value="stub"></option>
                 </select>
-                <div class="break"></div>
-                <button id="play" onclick="playSound()">Play</button>
-                <button id="exit" onclick="closeUI()">Exit</button>
+                <div class="buttonbox">
+                    <button id="play" onclick="playSound()">Play</button>
+                    <button id="exit" onclick="closeUI()">Exit</button>
+                </div>
             </div>
         </div>
 

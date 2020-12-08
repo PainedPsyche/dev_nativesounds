@@ -1,8 +1,11 @@
 # dev_nativesounds
 
-I made this tool since I needed to check out sound effect that can be played using [PlaySoundFrontend](https://runtime.fivem.net/doc/natives/?_0x67C540AA08E4A6F5) function.
+I made this tool since I needed to check out sound effects that can be played using natives.
 
-I might possibly expand on it to allow exploring sounds played with other functions in the future.
+Currently supported functions:
+* [PlaySoundFrontend](https://runtime.fivem.net/doc/natives/?_0x67C540AA08E4A6F5)
+* [PlaySound](https://runtime.fivem.net/doc/natives/?_0x7FF4944CC209192D)
+
 
 ## Usage:
 
